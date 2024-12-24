@@ -3,7 +3,7 @@
 
 using namespace std;
 
-ThreadPoolTask::ThreadPoolTask(task_fn fn, void *args, task_fn cb, void *cb_args)
+threadpool_task::threadpool_task(task_fn fn, void *args, task_fn cb, void *cb_args)
 	: m_fn(fn),
 	  m_args(args),
 	  m_cb(cb),
@@ -11,12 +11,12 @@ ThreadPoolTask::ThreadPoolTask(task_fn fn, void *args, task_fn cb, void *cb_args
 {
 }
 
-ThreadPoolTask::~ThreadPoolTask()
+threadpool_task::~threadpool_task()
 {
 
 }
 
-ThreadPool::ThreadPool(int threads) : m_nthreads(threads), stop(false)
+threadpool::threadpool(int threads) : m_nthreads(threads), stop(false)
 {
 	for (int ii = 0; ii < m_nthreads; ii++) {
 		m_threads.emplace_back([this, ii]{
@@ -43,7 +43,7 @@ ThreadPool::ThreadPool(int threads) : m_nthreads(threads), stop(false)
 	}
 }
 
-ThreadPool::~ThreadPool()
+threadpool::~threadpool()
 {
 	unique_lock<mutex> lock(m_lock);
 	stop = true;
@@ -55,11 +55,11 @@ ThreadPool::~ThreadPool()
 	}
 }
 
-void ThreadPool::ExecuteTask(task_fn fn, void *args,
-			     task_fn cb, void *cb_args)
+void threadpool::execute_task(task_fn fn, void *args,
+			      task_fn cb, void *cb_args)
 {
-	unique_ptr<ThreadPoolTask> task = make_unique<ThreadPoolTask>(fn, args,
-								      cb, cb_args);
+	unique_ptr<threadpool_task> task = make_unique<threadpool_task>(fn, args,
+								        cb, cb_args);
 	unique_lock<mutex> lock(m_lock);
 	m_tasks.push(move(task));
 	m_cv.notify_one();

@@ -5,7 +5,7 @@
 
 using namespace std;
 
-void threadpool_task(void *args)
+void test_fn(void *args)
 {
 	int *elem = (int *)args;
 	// cout << *elem << " threadpool task function sleeping" << endl;
@@ -15,12 +15,12 @@ void threadpool_task(void *args)
 
 int main(void)
 {
-	ThreadPool tp(10);
-	vector<int> vec(20);
+	threadpool	tp(10);
+	vector<int>	vec(20);
 
 	for (int ii = 0; ii < 20; ii++) {
 		vec[ii] = ii;
-		tp.ExecuteTask(threadpool_task, &vec[ii], nullptr, nullptr);
+		tp.execute_task(test_fn, &vec[ii], nullptr, nullptr);
 	}
 
 	for (auto ii : vec) {

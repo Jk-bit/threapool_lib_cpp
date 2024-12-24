@@ -5,20 +5,20 @@
 
 typedef void (*task_fn)(void *);
 
-class ThreadPoolTask
+class threadpool_task
 {
 public:
 	task_fn			m_fn;
 	void			*m_args;
 	task_fn			m_cb;
 	void			*m_cb_args;
-	ThreadPoolTask(task_fn fn, void *args, task_fn cb_fn, void *cb_args);
-	~ThreadPoolTask();
+	threadpool_task(task_fn fn, void *args, task_fn cb_fn, void *cb_args);
+	~threadpool_task();
 };
 
-typedef std::unique_ptr<ThreadPoolTask> tp_task;
+typedef std::unique_ptr<threadpool_task> tp_task;
 
-class ThreadPool
+class threadpool
 {
 private:
 	int				m_nthreads;
@@ -28,8 +28,8 @@ private:
 	std::condition_variable		m_cv;
 	bool				stop;
 public:
-	ThreadPool(int threads);
-	~ThreadPool();
-	void ExecuteTask(task_fn fn, void *args,
+	threadpool(int threads);
+	~threadpool();
+	void execute_task(task_fn fn, void *args,
 			 task_fn cb, void *cb_args);
 };
